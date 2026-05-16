@@ -2,8 +2,8 @@ import math
 import numpy as np
 
 
-def view_matrix(camera_pos, yaw, pitch):
-    translation = translate(camera_pos)                 # переносим мир в систему координат камеры
+def view_matrix(camera_pos, yaw, pitch, player_height):
+    translation = translate(camera_pos, player_height)                 # переносим мир в систему координат камеры
     yaw_rotation = rotate_y(-yaw)                       # Y rotation
     pitch_rotation = rotate_x(-pitch)                   # X rotation
     return pitch_rotation @ yaw_rotation @ translation
@@ -31,10 +31,10 @@ def rotate_x(angle):
     ], dtype='f4')
 
 
-def translate(camera_pos):
+def translate(camera_pos, player_height):
     return np.array([
         [1, 0, 0, -camera_pos[0]],
-        [0, 1, 0, -camera_pos[1]],
+        [0, 1, 0, -(camera_pos[1] + player_height)],
         [0, 0, 1, -camera_pos[2]],
         [0, 0, 0, 1],
     ], dtype='f4')
@@ -56,4 +56,21 @@ def perspective(fov, aspect, near, far):
         [0, f, 0, 0],
         [0, 0, (far + near) / (near - far), (2 * far * near) / (near - far)],
         [0, 0, -1, 0],
+    ], dtype='f4')
+
+
+# def ortho(left, right, bottom, top, near=-1.0, far=1.0):
+#     return np.array([
+#         [2 / (right - left), 0, 0, -(right + left) / (right - left)],
+#         [0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom)],
+#         [0, 0, -2 / (far - near), -(far + near) / (far - near)],
+#         [0, 0, 0, 1],
+#     ], dtype='f4')
+
+def ortho():
+    return np.array([
+        [2, 0, 0, -1],
+        [0, 2, 0, -1],
+        [0, 0, 2, -1],
+        [0, 0, 0, 1],
     ], dtype='f4')

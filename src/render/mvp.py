@@ -1,17 +1,12 @@
 import numpy as np
-
 from src.render.matrices import *
 
-proj = np.array([])
 
 def calculate_mvp(window, player):
-    global proj
+    aspect = window.width / window.height
+    proj = perspective(math.radians(60), aspect, 0.1, 100.0)
 
-    if not proj.any():
-        aspect = window.width / window.height
-        proj = perspective(math.radians(60), aspect, 0.1, 100.0)
-
-    view = view_matrix(player.pos, player.yaw, player.pitch)
+    view = view_matrix(player.pos, player.yaw, player.pitch, player.height)
     model = matrix_polygon()
 
     return proj @ view @ model

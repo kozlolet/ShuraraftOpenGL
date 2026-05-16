@@ -1,3 +1,4 @@
+import os
 from pprint import pprint
 from pathlib import Path
 
@@ -26,7 +27,7 @@ class Chunk:
         # src_path = Path(__file__).resolve().parent.parent.parent
         chunk_path = src_path / 'worlds' / 'ivan' / f'chunk({self.x},{self.z})'
         with open(chunk_path / 'blocks.data', 'rb') as file:
-            for y in range(16):
+            for y in range(64):
                 self.blocks.append([])
                 for x in range(16):
                     self.blocks[y].append([])
@@ -35,12 +36,12 @@ class Chunk:
                         int_block_id = int.from_bytes(block_id)
                         if int_block_id:
                             self.blocks[y][x].append(Block(self, int_block_id, x, y, z))
-                        elif len(self.blocks) <= 16:
+                        else:
                             self.blocks[y][x].append(0)
 
     def make_polygons_vao(self):
         polygons_mesh = []
-        for y in range(16):
+        for y in range(64):
             for x in range(16):
                 for z in range(16):
                     block = self.blocks[y][x][z]
@@ -81,20 +82,18 @@ class Chunk:
 
 
 
-# chunk = Chunk(1, 0, 0)
-# src_path = Path(__file__).resolve().parent.parent.parent
-# world_path = src_path / 'worlds' / 'ivan' / 'chunk(0,0)'
-# with open(world_path / 'blocks.data', 'wb') as file:
-#     y = 0
-#     for x in range(16):
-#         for z in range(16):
-#             block = 2
-#             file.write(block.to_bytes())
-#     y = 1
-#     for x in range(16):
-#         for z in range(16):
-#             block = 1
-#             file.write(block.to_bytes())
+# for chunk_x in range(4):
+#     for chunk_z in range(4):
+#         # chunk = Chunk(1, chunk_x, chunk_z)
+#         src_path = Path(__file__).resolve().parent.parent.parent
+#         chunk_path = src_path / 'worlds' / 'ivan' / f'chunk({chunk_x},{chunk_z})'
+#         os.makedirs(chunk_path)
+#         with open(chunk_path / 'blocks.data', 'wb') as file:
+#             for y in range(16):
+#                 for x in range(16):
+#                     for z in range(16):
+#                         block = 1
+#                         file.write(block.to_bytes())
 
 
 # src_path = Path(__file__).resolve().parent.parent.parent

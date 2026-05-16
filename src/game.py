@@ -33,23 +33,26 @@ class Game:
 
         @self.window.event
         def on_resize(width, height):
-            self.ctx.viewport = (0, 0, width, height)
-            aspect = width / max(height, 1)
-            mvp.proj = perspective(math.radians(60), aspect, 0.1, 100.0)
+            self.scene.ui.reload_uv()
             return pyglet.event.EVENT_HANDLED
 
         @self.window.event
         def on_mouse_motion(x, y, dx, dy):
-            self.scene.mouse_handle(x, y, dx, dy)
+            self.scene.mouse_motion(x, y, dx, dy)
+
+        @self.window.event
+        def on_mouse_press(x, y, button, modifiers):
+            self.scene.mouse_press(x, y, button, modifiers)
 
         @self.window.event
         def on_key_press(symbol, modifiers):
             self.keys.on_key_press(symbol, modifiers)
-            self.scene.key_press_handle(symbol, modifiers)
+            self.scene.key_press(symbol, modifiers)
 
         @self.window.event
         def on_key_release(symbol, modifiers):
             self.keys.on_key_release(symbol, modifiers)
+            self.scene.key_release(symbol, modifiers)
 
         pyglet.app.run()
 

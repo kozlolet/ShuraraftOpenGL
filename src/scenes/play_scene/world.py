@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 from src.scenes.play_scene.chunk import Chunk
 from src.scenes.play_scene.textures_order import textures_order
+from math import floor
+from  src.scenes.play_scene.block import Block
 
 
 class World:
@@ -41,7 +43,7 @@ class World:
                 self.already_loaded_chunks_pos.append([x, z])
 
     def load_textures(self):
-        textures_path = self.src_path / "textures"
+        textures_path = self.src_path / "textures" / "blocks"
         textures = []
         atlas_width = 64
         atlas_height = 0
@@ -59,7 +61,7 @@ class World:
         self.texture_atlas.filter = (moderngl.NEAREST, moderngl.NEAREST)
 
     def get_block(self, x, y, z):
-        if not 0 <= y <= 15: return
+        if not 0 <= y <= 63: return
 
         chunk_x = x//16
         chunk_z = z//16
@@ -72,6 +74,59 @@ class World:
             return
 
         return chunk.blocks[in_chunk_y][in_chunk_x][in_chunk_z]
+
+    def mining_block(self, x, y, z):
+        if not 0 <= y <= 63: return
+
+        chunk_x = x//16
+        chunk_z = z//16
+        in_chunk_x = x - 16*chunk_x
+        in_chunk_y = y
+        in_chunk_z = z - 16*chunk_z
+
+        chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x and chunk.z == chunk_z), None)
+        if not chunk:
+            return
+
+        chunk.blocks[in_chunk_y][in_chunk_x].pop(in_chunk_z)
+        chunk.blocks[in_chunk_y][in_chunk_x].insert(in_chunk_z, 0)
+
+        # update chunks
+        chunk.make_polygons_vao()
+        if in_chunk_z == 15:
+            forward_chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x and chunk.z == chunk_z+1), None)
+            if forward_chunk:
+                forward_chunk.make_polygons_vao()
+        elif in_chunk_z == 0:
+            back_chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x and chunk.z == chunk_z-1), None)
+            if back_chunk:
+                back_chunk.make_polygons_vao()
+        elif in_chunk_x == 15:
+            right_chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x+1 and chunk.z == chunk_z), None)
+            if right_chunk:
+                right_chunk.make_polygons_vao()
+        elif in_chunk_z == 0:
+            left_chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x-1 and chunk.z == chunk_z-1), None)
+            if left_chunk:
+                left_chunk.make_polygons_vao()
+
+    def putting_block(self, x, y, z):
+        if not 0 <= y <= 63: return
+
+        chunk_x = x//16
+        chunk_z = z//16
+        in_chunk_x = x - 16*chunk_x
+        in_chunk_y = y
+        in_chunk_z = z - 16*chunk_z
+
+        chunk = next((chunk for chunk in self.chunks if chunk.x == chunk_x and chunk.z == chunk_z), None)
+        if not chunk:
+            return
+
+        chunk.blocks[in_chunk_y][in_chunk_x].pop(in_chunk_z)
+        chunk.blocks[in_chunk_y][in_chunk_x].insert(in_chunk_z, Block(chunk, 2, in_chunk_x, in_chunk_y, in_chunk_z))
+
+        chunk.make_polygons_vao()
 
     def update(self):
         pass
