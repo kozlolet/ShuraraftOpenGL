@@ -2,7 +2,7 @@ import pyglet
 from src.ui.elements.button import Button
 
 
-class Pause:
+class MainMenu:
     def __init__(self, ui_manager):
         self.game = ui_manager.game
         self.ui_manager = ui_manager
@@ -18,7 +18,7 @@ class Pause:
             button.color = (100, 100, 100)
 
         def on_click(button):
-            self.ui_manager.scene.set_paused(False)
+            self.game.change_scene("world_selection_scene")
 
         width, height = from_ratio(0.5, 0.08)
         _, offset_y = from_ratio(0, 0.05)
@@ -28,15 +28,14 @@ class Pause:
                 x=x, y=y+offset_y,
                 width=width, height=height,
                 color=(60, 60, 60),
-                text="продолжить", font_size=48,
+                text="играть", font_size=48,
                 on_hover=on_hover,
                 on_click=on_click
             )
         )
 
         def on_click(button):
-            self.ui_manager.scene.world.storage.save_world()
-            self.game.change_scene("main_menu_scene")
+            pyglet.app.exit()
 
         width, height = from_ratio(0.5, 0.08)
         _, offset_y = from_ratio(0, 0.05)
@@ -46,7 +45,7 @@ class Pause:
                 x=x, y=y-offset_y,
                 width=width, height=height,
                 color=(60, 60, 60),
-                text="сохранить и выйти", font_size=48,
+                text="выйти из игры", font_size=48,
                 on_hover=on_hover,
                 on_click=on_click
             )

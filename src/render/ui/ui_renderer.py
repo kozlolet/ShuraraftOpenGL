@@ -1,7 +1,6 @@
-from src.render.matrices import ortho
-from src.render.ui_program import init_program
+from src.render.polygons.matrices import ortho
+from src.render.ui.ui_program import init_program
 import numpy as np
-import moderngl
 
 
 class UIRenderer:

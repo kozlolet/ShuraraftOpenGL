@@ -5,7 +5,7 @@ def split_block_on_polygons(block, textures_count):
     world = block.chunk.world
 
     x = block.x + 16*block.chunk.x  # absolute
-    y = block.y                     # absolute
+    y = block.y + 16*block.s        # absolute
     z = block.z + 16*block.chunk.z  # absolute
 
     texture_num = block.id

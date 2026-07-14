@@ -1,5 +1,4 @@
-from src.render.mvp import calculate_mvp
-import pyglet
+from src.render.polygons.mvp import calculate_mvp
 import moderngl
 
 

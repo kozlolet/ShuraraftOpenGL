@@ -1,9 +1,10 @@
-from src.render.ui_renderer import UIRenderer
+from src.render.ui.ui_renderer import UIRenderer
 
 
 class UIManager:
     def __init__(self, scene):
         self.scene = scene
+        self.game = scene.game
         self.ctx = scene.ctx
         self.window = scene.window
 
@@ -15,6 +16,7 @@ class UIManager:
         self.render = UIRenderer(self.ctx, self.window)
 
     def reload_uv(self):
+        self.ctx
         for screen in self.active_screens:
             screen.on_close()
             screen.on_open()
@@ -27,9 +29,16 @@ class UIManager:
     def in_ratio(self, pixels_x, pixels_y):
         return pixels_x / self.window.width, pixels_y / self.window.height
 
+    def from_ratio(self, ratio_x, ratio_y):
+        return ratio_x * self.window.width, ratio_y * self.window.height
+
     def mouse_motion(self, x, y, dx, dy):
         last_screen = self.active_screens[-1]
         last_screen.mouse_motion(x, y, dx, dy)
+
+    def mouse_release(self, x, y, button, modifiers):
+        last_screen = self.active_screens[-1]
+        last_screen.mouse_release(x, y, button, modifiers)
 
     def register(self, name, screen):
         self.screens[name] = screen

@@ -1,5 +1,4 @@
-import numpy as np
-from src.render.matrices import *
+from src.render.polygons.matrices import *
 
 
 def calculate_mvp(window, player):

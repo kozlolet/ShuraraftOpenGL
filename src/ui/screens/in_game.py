@@ -9,31 +9,35 @@ class InGame:
         self.visible = True
         self.blocks_game_input = False
         self.render = ui_manager.render
+        self.elements = []
 
     def init_elements(self):
         center = self.ui_manager.get_center
 
         width, height = 50, 5
         x, y = center(width, height)
-        self.cross_line1 = pyglet.shapes.Rectangle(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            color=(255, 255, 255)
-        )
+        self.elements.append(
+            pyglet.shapes.Rectangle(
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+                color=(255, 255, 255)
+            ))
 
         width, height = 5, 50
         x, y = center(width, height)
-        self.cross_line2 = pyglet.shapes.Rectangle(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            color=(255, 255, 255)
-        )
+        self.elements.append(
+            pyglet.shapes.Rectangle(
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+                color=(255, 255, 255)
+            ))
 
     def on_open(self):
+        self.elements = []
         self.init_elements()
 
     def on_close(self):
@@ -42,13 +46,17 @@ class InGame:
     def mouse_motion(self, x, y, dx, dy):
         pass
 
+    def mouse_release(self, x, y, button, modifiers):
+        pass
+
     def update(self, dt):
         pass
 
     def draw(self):
-        if self.visible:
-            self.cross_line1.draw()
-            self.cross_line2.draw()
+        if not self.visible:
+            return
+        for element in self.elements:
+            element.draw()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.TAB:
